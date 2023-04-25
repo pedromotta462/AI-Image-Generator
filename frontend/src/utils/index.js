@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import { surpriseMePrompts } from '../constants';
+import { surpriseMePrompts, peopleNames } from '../constants';
 
 export function getRandomPrompt(prompt) {
     const randomIndex = Math.floor(Math.random() * surpriseMePrompts.length);
@@ -8,6 +8,15 @@ export function getRandomPrompt(prompt) {
     if (randomPrompt === prompt) return getRandomPrompt(prompt);
 
     return randomPrompt;
+}
+
+export function getRandomNames(name) {
+    const randomIndex = Math.floor(Math.random() * peopleNames.length);
+    const randomName = peopleNames[randomIndex];
+
+    if (randomName === name) return getRandomNames(name);
+
+    return randomName;
 }
 
 export async function downloadImage(_id, photo) {

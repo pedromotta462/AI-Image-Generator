@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { preview } from '../assets';
-import { getRandomPrompt } from '../utils';
+import { getRandomPrompt, getRandomNames } from '../utils';
 import { FormField, Loader } from '../components';
 
 const CreatePost = () => {
@@ -24,11 +24,14 @@ const CreatePost = () => {
         setForm({ ...form, prompt: randomPrompt });
     };
 
+    const giveRandomPrompt = getRandomPrompt(form.prompt);
+    const giveRandomNames = getRandomNames(form.name);
+
     const generateImage = async () => {
         if (form.prompt) {
             try {
                 setGeneratingImg(true);
-                const response = await fetch('https://dalle-arbb.onrender.com/api/v1/dalle', {
+                const response = await fetch('http://localhost:8080/api/v1/dalle', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -41,9 +44,9 @@ const CreatePost = () => {
                 const data = await response.json();
                 setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
             } catch (err) {
-            alert(err);
+                alert(err);
             } finally {
-            setGeneratingImg(false);
+                setGeneratingImg(false);
             }
         } else {
             alert('Please provide proper prompt');
@@ -51,30 +54,30 @@ const CreatePost = () => {
     };
     
     const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      if (form.prompt && form.photo) {
-        setLoading(true);
-        try {
-          const response = await fetch('https://dalle-arbb.onrender.com/api/v1/post', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ...form }),
-          });
-  
-          await response.json();
-          alert('Success');
-          navigate('/');
-        } catch (err) {
-          alert(err);
-        } finally {
-          setLoading(false);
+        e.preventDefault();
+    
+        if (form.prompt && form.photo) {
+            setLoading(true);
+            try {
+                const response = await fetch('http://localhost:8080/api/v1/post', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ...form }),
+                });
+        
+                await response.json();
+                alert('Success');
+                navigate('/');
+            } catch (err) {
+                alert(err);
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            alert('Please generate an image with proper details');
         }
-      } else {
-        alert('Please generate an image with proper details');
-      }
     };
     return (
         <section className="max-w-7xl mx-auto">
@@ -89,7 +92,7 @@ const CreatePost = () => {
                     labelName="Your Name"
                     type="text"
                     name="name"
-                    placeholder="Ex., john doe"
+                    placeholder={`Ex.: ${giveRandomNames}`}
                     value={form.name}
                     handleChange={handleChange}
                 />
@@ -98,7 +101,7 @@ const CreatePost = () => {
                     labelName="Prompt"
                     type="text"
                     name="prompt"
-                    placeholder="An Impressionist oil painting of sunflowers in a purple vase…"
+                    placeholder= {giveRandomPrompt}
                     value={form.prompt}
                     handleChange={handleChange}
                     isSurpriseMe
