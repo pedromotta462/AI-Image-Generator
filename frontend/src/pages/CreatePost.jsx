@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { preview } from '../assets';
@@ -14,6 +14,15 @@ const CreatePost = () => {
         photo: '',
     });
 
+    const [randomPrompt, setRandomPrompt] = useState('');
+    const [randomName, setRandomName] = useState('');
+
+    useEffect(() => {
+        // código a ser executado após a renderização do componente
+        setRandomPrompt(getRandomPrompt(form.prompt));
+        setRandomName(getRandomNames(form.name));
+    }, []);
+
     const [generatingImg, setGeneratingImg] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -23,9 +32,6 @@ const CreatePost = () => {
         const randomPrompt = getRandomPrompt(form.prompt);
         setForm({ ...form, prompt: randomPrompt });
     };
-
-    const giveRandomPrompt = getRandomPrompt(form.prompt);
-    const giveRandomNames = getRandomNames(form.name);
 
     const generateImage = async () => {
         if (form.prompt) {
@@ -92,7 +98,7 @@ const CreatePost = () => {
                     labelName="Your Name"
                     type="text"
                     name="name"
-                    placeholder={`Ex.: ${giveRandomNames}`}
+                    placeholder={`Ex.: ${randomName}`}
                     value={form.name}
                     handleChange={handleChange}
                 />
@@ -101,7 +107,7 @@ const CreatePost = () => {
                     labelName="Prompt"
                     type="text"
                     name="prompt"
-                    placeholder= {giveRandomPrompt}
+                    placeholder= {randomPrompt}
                     value={form.prompt}
                     handleChange={handleChange}
                     isSurpriseMe
@@ -135,7 +141,8 @@ const CreatePost = () => {
                 <button
                     type="button"
                     onClick={generateImage}
-                    className=" text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                    className={`${generatingImg ? 'cursor-wait' : 'cursor-pointer'} text-white bg-green-700 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
+                    disabled={generatingImg}
                 >
                     {generatingImg ? 'Generating...' : 'Generate'}
                 </button>
@@ -145,9 +152,10 @@ const CreatePost = () => {
                 <p className="mt-2 text-[#666e75] text-[14px]">** Once you have created the image you want, you can share it with others in the community **</p>
                 <button
                     type="submit"
-                    className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                    className={`${loading ? 'cursor-wait' : 'cursor-pointer'} mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
+                    disabled={loading}
                 >
-                    {loading ? 'Sharing...' : 'Share with the Community'}
+                    {loading ? <><Loader /> Sharing...</> : 'Share with the Community'}
                 </button>
                 </div>
             </form>
