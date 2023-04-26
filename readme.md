@@ -4,6 +4,9 @@
 Meu próprio gerador de imagem com inteligencia artificial, usando api do dalle-2, onde qualquer um pode compartilhar sua criação, clique no link e comece a usar:
 
 [ImageForgeAI](https://ai-image-generator-three-roan.vercel.app/)
+
+OBS: Alguns recursos podem parar de funcionar com o tempo, pois utiliza da versão gratuita, por exemplo, a api da Openai é paga, como estou usando de forma gratuita, pode ser que depois do dia 01/05/2023 a chave da api expire e a aplicação não funcione corretamente.
+
 ## Stack utilizada
 
 **Front-end:** React, TailwindCSS
